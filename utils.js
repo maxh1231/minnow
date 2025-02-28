@@ -1,5 +1,5 @@
 const { guildId } = require('./config.json')
-const { joinVoiceChannel } = require('@discordjs/voice');
+const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
 
 const getVoiceChannels = async (server) => {
     let channels = await server.channels.fetch();
@@ -22,4 +22,9 @@ const connectToVoice = (channelId, server) => {
     });
 }
 
-module.exports = { getVoiceChannels, getEmptyVoiceChannels, connectToVoice }
+const disconnectFromVoice = () => {
+    const connection = getVoiceConnection(guildId);
+    connection.destroy();
+}
+
+module.exports = { getVoiceChannels, getEmptyVoiceChannels, connectToVoice, disconnectFromVoice }

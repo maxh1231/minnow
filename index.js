@@ -3,7 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, VoiceState } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 const { token, guildId, clientId } = require('./config.json');
-const { connectToVoice, getVoiceChannels, getEmptyVoiceChannels } = require('./utils');
+const { connectToVoice, getVoiceChannels, getEmptyVoiceChannels, disconnectFromVoice } = require('./utils');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 
@@ -72,6 +72,10 @@ client.once(Events.ClientReady, async readyClient => {
     const emptyVoiceChannels = await getEmptyVoiceChannels(voiceChannels);
 
     connectToVoice("1046912070240714784", server);
+
 });
 
 client.login(token);
+
+process.on('SIGTERM', disconnectFromVoice)
+process.on('SIGINT', disconnectFromVoice)
