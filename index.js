@@ -55,21 +55,18 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         const server = client.guilds.cache.get(guildId);
 
         const channels = await getVoiceChannels(server)
-        const emptyChannels = await getEmptyVoiceChannels(channels, server);
 
-        const arr = Array.from(emptyChannels.values());
+        const randomIndex = Math.floor(Math.random() * channels.length);
 
-        const randomIndex = Math.floor(Math.random() * arr.length);
-
-        connectToVoice(arr[randomIndex].id, server)
+        connectToVoice(channels[randomIndex].id, server)
     }
 });
 
 client.once(Events.ClientReady, async readyClient => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
     const server = client.guilds.cache.get(guildId);
-    const voiceChannels = await getVoiceChannels(server);
-    const emptyVoiceChannels = await getEmptyVoiceChannels(voiceChannels);
+    // const voiceChannels = await getVoiceChannels(server);
+    // const emptyVoiceChannels = await getEmptyVoiceChannels(voiceChannels);
 
     connectToVoice("1046912070240714784", server);
 

@@ -2,6 +2,12 @@ services:
   app:
     build: .
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./:/app/
+      # - ./index.js:/app/index.js
+      # - /app/node_modules
     command: [ "sh", "-c", "node deploy-commands.js && node index.js" ]
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: /app

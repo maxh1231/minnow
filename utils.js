@@ -1,15 +1,11 @@
 const { guildId } = require('./config.json')
 const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
 
-const getVoiceChannels = async (server) => {
+const getEmptyVoiceChannels = async (server) => {
     let channels = await server.channels.fetch();
-    const voiceChannels = channels.filter((i) => i.type === 2);
-    return voiceChannels;
-}
-
-const getEmptyVoiceChannels = async (voiceChannels) => {
-    const empty = await voiceChannels.filter((i) => i.members.size == 0);
-    return empty;
+    const voiceChannels = channels.filter((channel) => channel.type === 2);
+    const emptyVoiceChannels = voiceChannels.filter((channel) => channel.member.size === 0)
+    return Array.from(emptyVoiceChannels.values());
 }
 
 const connectToVoice = (channelId, server) => {
