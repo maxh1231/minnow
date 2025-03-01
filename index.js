@@ -3,7 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, VoiceState } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 const { token, guildId, clientId } = require('./config.json');
-const { connectToVoice, getVoiceChannels, getEmptyVoiceChannels, disconnectFromVoice } = require('./utils');
+const { connectToVoice, getEmptyVoiceChannels, disconnectFromVoice } = require('./utils');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 
@@ -41,20 +41,20 @@ client.on(Events.InteractionCreate, async interaction => {
     } catch (error) {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+            await interaction.followUp({ content: 'There was an error while executing this command!' });
         } else {
-            await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+            await interaction.reply({ content: 'There was an error while executing this command!', });
         }
     }
 });
 
 client.on('voiceStateUpdate', async (oldState, newState) => {
-    botCurrentChannel = getVoiceConnection(guildId);
+    const botCurrentChannel = getVoiceConnection(guildId);
 
-    if (newState.id != clientId && newState.channelId == botCurrentChannel.joinConfig.channelId) {
+    if (newState.id != clientId && newState.channelId == botCurrentChannel?.joinConfig.channelId) {
         const server = client.guilds.cache.get(guildId);
 
-        const channels = await getVoiceChannels(server)
+        const channels = await getEmptyVoiceChannels(server)
 
         const randomIndex = Math.floor(Math.random() * channels.length);
 
