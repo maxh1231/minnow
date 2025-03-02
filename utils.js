@@ -1,6 +1,11 @@
-// @ts-nocheck
 const { guildId } = require('./config.json')
 const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
+
+const getVoiceChannels = async (server) => {
+    let channels = await server.channels.fetch();
+    const voiceChannels = channels.filter((channel) => channel.type === 2);
+    return Array.from(voiceChannels.values());
+}
 
 const getEmptyVoiceChannels = async (server) => {
     let channels = await server.channels.fetch();
@@ -21,7 +26,7 @@ const connectToVoice = (channelId, server) => {
 
 const disconnectFromVoice = () => {
     const connection = getVoiceConnection(guildId);
-    connection.destroy();
+    connection?.destroy();
 }
 
-module.exports = { getEmptyVoiceChannels, connectToVoice, disconnectFromVoice }
+module.exports = { getVoiceChannels, getEmptyVoiceChannels, connectToVoice, disconnectFromVoice }

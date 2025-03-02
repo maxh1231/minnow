@@ -48,8 +48,19 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 });
 
-client.on('voiceStateUpdate', async (oldState, newState) => {
+client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     const botCurrentChannel = getVoiceConnection(guildId);
+    // newState.channel?.members.forEach((member) => {
+    //     console.log(member.user.globalName);
+    //     console.log(member.roles.cache);
+    // })
+
+    // console.log(newState.member?.roles.cache.find((role) => role.name === 'fisherman'))
+
+    // if (newState.member?.roles.cache.find((role) => role.name == 'fisherman')) {
+    //     console.log('this events users role is fisherman')
+    //     const fish = newState.channel?.members.filter((member) => member.)
+    // }
 
     if (newState.id != clientId && newState.channelId == botCurrentChannel?.joinConfig.channelId) {
         const server = client.guilds.cache.get(guildId);
@@ -65,8 +76,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 client.once(Events.ClientReady, async readyClient => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
     const server = client.guilds.cache.get(guildId);
-    // const voiceChannels = await getVoiceChannels(server);
-    // const emptyVoiceChannels = await getEmptyVoiceChannels(voiceChannels);
 
     connectToVoice("1046912070240714784", server);
 
