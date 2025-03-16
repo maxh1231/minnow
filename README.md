@@ -14,7 +14,7 @@ A silly little Discord bot that swims around your server and runs away from user
 - Clone the repository.
 - Create a `config.json` file at the root of the directory.
 - Copy the contents of `config.json.example` to your newly created `config.json`.
-- Contact codeowners for credentials.
+- Contact codeowners for credentials. [(Or supply your own)](https://discord.com/developers/docs/intro)
 
 ## Starting the application
 
