@@ -27,3 +27,8 @@ A silly little Discord bot that swims around your server and runs away from user
 
 - Install dependencies: `npm i`
 - Run start script: `npm run start` (automatically deploys and registers bot commands)
+
+## Contribute
+
+- Fork the repository.
+- Open a [Pull Request](https://github.com/maxh1231/minnow/pulls) to the `develop` branch.
