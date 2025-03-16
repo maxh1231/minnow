@@ -1,5 +1,7 @@
 # Minnow Bot
 
+A silly little Discord bot that swims around your server and runs away from users. 🐟
+
 ## Installation & Setup
 
 ### Prerequisites
