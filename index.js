@@ -6,9 +6,7 @@ const { token, guildId, clientId } = require('./config.json');
 const { connectToVoice, getEmptyVoiceChannels, disconnectFromVoice } = require('./utils');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
-
 client.commands = new Collection();
-
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
@@ -43,45 +41,42 @@ client.on(Events.InteractionCreate, async interaction => {
         if (interaction.replied || interaction.deferred) {
             await interaction.followUp({ content: 'There was an error while executing this command!' });
         } else {
-            await interaction.reply({ content: 'There was an error while executing this command!', });
+            await interaction.reply({ content: 'There was an error while executing this command!' });
         }
     }
 });
 
+// on Voice State Updates I.E. users joining/disconnecting, muting/unmuting, starting stream, closing stream, and more. This applies to the entire server
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     const botCurrentChannel = getVoiceConnection(guildId);
-    // newState.channel?.members.forEach((member) => {
-    //     console.log(member.user.globalName);
-    //     console.log(member.roles.cache);
-    // })
 
-    // console.log(newState.member?.roles.cache.find((role) => role.name === 'fisherman'))
-
-    // if (newState.member?.roles.cache.find((role) => role.name == 'fisherman')) {
-    //     console.log('this events users role is fisherman')
-    //     const fish = newState.channel?.members.filter((member) => member.)
-    // }
-
+    // if the user that created the VoiceStateUpdate event is NOT the bot, AND the new VoiceStateUpdate is in the bot's current channel
     if (newState.id != clientId && newState.channelId == botCurrentChannel?.joinConfig.channelId) {
         const server = client.guilds.cache.get(guildId);
-
-        const channels = await getEmptyVoiceChannels(server)
-
+        const channels = await getEmptyVoiceChannels(server);
         const randomIndex = Math.floor(Math.random() * channels.length);
-
-        connectToVoice(channels[randomIndex].id, server)
+        connectToVoice(channels[randomIndex].id, server);
     }
 });
 
+
+// on bot startup
 client.once(Events.ClientReady, async readyClient => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
     const server = client.guilds.cache.get(guildId);
 
     connectToVoice("1046912070240714784", server);
 
+    // Join empty voice channel every 3 minutes (18,000 milliseconds)
+    setInterval(async () => {
+        const channels = await getEmptyVoiceChannels(server);
+        const randomIndex = Math.floor(Math.random() * channels.length);
+        connectToVoice(channels[randomIndex].id, server)
+    }, 180000);
 });
 
 client.login(token);
 
-process.on('SIGTERM', disconnectFromVoice)
-process.on('SIGINT', disconnectFromVoice)
+// immediately disconnects bot from voice channel upon exiting application (dev convenience)
+process.on('SIGTERM', disconnectFromVoice);
+process.on('SIGINT', disconnectFromVoice);
