@@ -3,7 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, VoiceState } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 const { token, guildId, clientId } = require('./config.json');
-const { connectToVoice, getEmptyVoiceChannels, disconnectFromVoice } = require('./utils');
+const { connectToVoice, getEmptyVoiceChannels, initMovement, disconnectFromVoice } = require('./utils');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 client.commands = new Collection();
@@ -55,24 +55,16 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
         const server = client.guilds.cache.get(guildId);
         const channels = await getEmptyVoiceChannels(server);
         const randomIndex = Math.floor(Math.random() * channels.length);
+        disconnectFromVoice();
         connectToVoice(channels[randomIndex].id, server);
     }
 });
-
 
 // on bot startup
 client.once(Events.ClientReady, async readyClient => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
     const server = client.guilds.cache.get(guildId);
-
-    connectToVoice("1046912070240714784", server);
-
-    // Join empty voice channel every 3 minutes (18,000 milliseconds)
-    setInterval(async () => {
-        const channels = await getEmptyVoiceChannels(server);
-        const randomIndex = Math.floor(Math.random() * channels.length);
-        connectToVoice(channels[randomIndex].id, server)
-    }, 180000);
+    initMovement(server);
 });
 
 client.login(token);

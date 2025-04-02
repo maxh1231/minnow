@@ -33,7 +33,7 @@ const getEmptyVoiceChannels = async (server) => {
  * @returns {void}
  */
 const connectToVoice = (channelId, server) => {
-    const connection = joinVoiceChannel({
+    joinVoiceChannel({
         channelId: channelId,
         guildId: guildId,
         adapterCreator: server.voiceAdapterCreator,
@@ -51,4 +51,18 @@ const disconnectFromVoice = () => {
     connection?.destroy();
 }
 
-module.exports = { getVoiceChannels, getEmptyVoiceChannels, connectToVoice, disconnectFromVoice }
+/**
+ * Initializes voice channel movement every 3 minutes
+ * Bot is disonnected and a new VoiceConnection is created, mimicking movement 
+ * @param server | Guild object 
+ */
+const initMovement = (server) => {
+    setInterval(async () => {
+        disconnectFromVoice();
+        const channels = await getEmptyVoiceChannels(server);
+        const randomIndex = Math.floor(Math.random() * channels.length);
+        connectToVoice(channels[randomIndex].id, server)
+    }, 180000);
+}
+
+module.exports = { getVoiceChannels, getEmptyVoiceChannels, connectToVoice, disconnectFromVoice, initMovement }
