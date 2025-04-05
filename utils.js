@@ -58,9 +58,9 @@ const disconnectFromVoice = () => {
  */
 const initMovement = (server) => {
     setInterval(async () => {
-        disconnectFromVoice();
         const channels = await getEmptyVoiceChannels(server);
         const randomIndex = Math.floor(Math.random() * channels.length);
+        disconnectFromVoice();
         connectToVoice(channels[randomIndex].id, server)
     }, 180000);
 }
